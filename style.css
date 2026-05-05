@@ -1,0 +1,411 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, #222 0, #000 60%);
+  color: #f5f5f5;
+}
+
+.wrapper {
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+#hudOverlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3000;
+}
+
+.hud-left {
+  position: absolute;
+  top: 220px;   /* 👈 HIER verlaag/verhoog je de HUD */
+  left: 20px;
+  font-size: 22px;
+  font-family: "Courier New", monospace;
+  color: #fff;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+}
+
+
+.game-container canvas {
+  display: block;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+
+
+.message {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+  font-size: 24px;
+}
+
+.message .sub {
+  margin-top: 8px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.hidden {
+  display: none;
+}
+
+.hint {
+  margin-top: 10px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* Zwevend Bitty-plaatje, los van de game */
+.floating-bitty {
+  position: fixed;        /* vast op het scherm, niet in het canvas */
+  right: 50px;             /* afstand tot rechterkant (aanpasbaar) */
+  top: 20vh;              /* afstand tot bovenkant (aanpasbaar) */
+  width: 440px;           /* schaal van het plaatje */
+  height: auto;           /* behoud verhouding */
+  z-index: 2000;            /* ligt boven de canvassen */
+  pointer-events: none;   /* klik gaat door naar de game */
+}
+
+#hudOverlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3000;
+}
+
+
+#hudCanvas{
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2500;       /* onder hudOverlay (3000), maar boven de game */
+  pointer-events: none;
+}
+
+.hud-left div {
+  margin-bottom: 6px;
+}
+
+/* ─────────────────────────────────────────────
+   BREAKOUT CARD (zelfde stijl als playerCard)
+───────────────────────────────────────────── */
+/* ─────────────────────────────────────────────
+   COMPACT BREAKOUT BUTTON (onder login)
+───────────────────────────────────────────── */
+#playBreakoutBtn{
+  position: fixed;
+
+  /* 🔧 positie: exact onder login-paneel */
+  right: 110px;
+  top: 310px;          /* ⬅️ deze waarde kun je finetunen */
+
+  width: 260px;
+  height: 44px;
+  line-height: 44px;
+
+  text-align: center;
+  text-decoration: none;
+
+  font-weight: 900;
+  font-size: 14px;
+  letter-spacing: 0.6px;
+
+  color: #ffcc00;
+  background: rgba(0,0,0,0.35);
+
+  border-radius: 14px;
+  border: 3px solid #2a00ff;
+
+  box-shadow:
+    0 0 12px rgba(42,0,255,0.6),
+    inset 0 0 10px rgba(42,0,255,0.4);
+
+  z-index: 9999;
+}
+
+#playBreakoutBtn:hover{
+  filter: brightness(1.15);
+}
+
+/* Desktop: mobileOnly standaard uit */
+.mobileOnly { display: none; }
+
+/* Highscore button (mobile) */
+#highscoreToggleBtn{
+  position: fixed;
+  left: 12px;
+  top: 12px;
+  z-index: 10000;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 2px solid #2a00ff;
+  background: rgba(0,0,0,0.55);
+  color: #ffcc00;
+  font-weight: 800;
+}
+
+/* Highscore panel slide down */
+#highscorePanel{
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  top: 58px;
+  z-index: 10000;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 250ms ease;
+  border-radius: 14px;
+  border: 2px solid #2a00ff;
+  background: rgba(0,0,0,0.65);
+}
+
+#highscorePanel.open{
+  max-height: 55vh;
+}
+
+#highscorePanel .panelInner{
+  padding: 12px;
+}
+
+/* Player badge (mobile) */
+#playerBadge{
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 10000;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 2px solid #2a00ff;
+  background: rgba(0,0,0,0.55);
+  color: #ffcc00;
+  font-weight: 800;
+}
+
+#playerBadge img{
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+/* ===========================
+   MOBILE/TABLET MODE (820px)
+   =========================== */
+@media (max-width: 820px) {
+
+  /* stop flex-centering die alles half uit beeld duwt */
+  body{
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  /* wrapper fullscreen zodat schaal/translate altijd klopt */
+  .wrapper{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    text-align: left;
+  }
+
+   /* gameShell vrij kunnen transformen */
+  #gameShell{
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform-origin: top left;
+    touch-action: none; /* voorkomt scroll/pinch tijdens play */
+    will-change: transform;
+  } /* ✅ DIT HAAKJE ONTBRAK OP DE JUISTE PLEK */
+
+body.touchInput #gameShell {
+  touch-action: none;
+}
+
+  /* ✅ Donkere overlay achter mobile login */
+  #loginOverlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(2px);
+    z-index: 9998;      /* net onder playerCard */
+    pointer-events: auto;
+  }
+
+  #loginOverlay.hidden{
+    display: none;
+  }
+
+  /* ✅ playerCard wordt mobile LOGIN MODAL */
+  #playerCard{
+    display: block !important;
+    position: fixed !important;
+    left: 50% !important;
+    top: 44% !important;              /* iets boven midden, boven de game */
+    transform: translate(-50%, -50%) !important;
+    width: min(340px, 92vw) !important;
+    z-index: 9999 !important;
+  }
+/* ✅ zorg dat .hidden ook echt wint van #playerCard display:block !important */
+#playerCard.hidden{
+  display: none !important;
+}
+  /* ✅ MOBILE HUD: Score + Time zichtbaar, Lives verborgen */
+  #hudOverlay{
+    display:block !important;
+    pointer-events:none;
+    z-index: 3000;
+  }
+
+  /* verberg titel op mobile (scheelt ruimte) */
+  #hudOverlay .hud-title{
+    display:none !important;
+  }
+
+  /* Zet score/time bovenaan gecentreerd in 1 regel */
+  .hud-left{
+    position: fixed !important;
+    top: 18px !important;
+    left: 60% !important;
+    transform: translateX(-50%) !important;
+
+    display:flex !important;
+    gap: 28px;
+    align-items:center;
+
+    font-family: "Courier New", monospace !important;
+    font-weight: 900;
+    font-size: clamp(16px, 4.6vw, 22px) !important;
+    color: #fff !important;
+    text-shadow: 0 0 6px rgba(0,0,0,0.8);
+  }
+
+  /* haal de verticale spacing weg */
+  .hud-left div{
+    margin: 0 !important;
+    white-space: nowrap;
+  }
+
+  /* ✅ Lives weg op mobile (geen ruimte) */
+  .hud-left div:nth-child(3){
+    display:none !important;
+  }
+
+  #highscoreList .hsAvatar{
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+#highscoreList .hsAvatarEmpty{
+  background: rgba(255,255,255,0.15);
+}
+
+
+  /* Mobile-only UI aan (maar focus mode zet ze uit hieronder) */
+  .mobileOnly { display: block; }
+
+  /* hint tekst weg op mobiel */
+  .hint{ display:none !important; }
+
+  /* FOCUS MODE: alleen game zichtbaar (tijdelijk tot dots/maze perfect zijn) */
+
+  #playBreakoutBtn{ display:none !important; }
+  .floating-bitty{ display:none !important; }
+
+  /* ✅ HUD canvas zichtbaar (hierop worden o.a. pacman-lives getekend) */
+  #hudCanvas{ display:block !important; }
+
+  /* ✅ mobile UI: highscore knop + paneel werken met .open (dus NIET display:none) */
+  #highscoreToggleBtn{ display:block !important; }
+  #highscorePanel{ display:block !important; }
+  
+
+
+  /* nog UIT laten */
+ #playerBadge{ display:none !important; }
+
+}
+#highscoreList .hsRow{
+  display:flex;
+  gap:8px;
+  padding:6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  font-weight: 800;
+  color:#ffcc00;
+}
+
+#highscoreList .hsPos{ width:28px; color:#fff; }
+#highscoreList .hsName{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#highscoreList .hsScore{ width:60px; text-align:right; color:#fff; }
+#highscoreList .hsTime{ width:70px; text-align:right; color:#fff; }
+#highscoreList .hsLvl{ width:46px; text-align:right; color:#ffcc00; }
+#highscoreList .hsEmpty{ color: rgba(255,255,255,0.6); }
+
+
+/* iPhone Safari: voorkom auto-zoom op inputs */
+@media (max-width: 820px) {
+  input,
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  textarea,
+  select {
+    font-size: 16px !important;
+    line-height: 1.2;
+  }
+}
+
+.hsAvatar{
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: 0 0 auto;
+}
+
+/* tablet */
+@media (max-width: 900px){
+  .hsAvatar{ width: 28px; height: 28px; }
+}
+
+/* phone */
+@media (max-width: 520px){
+  .hsAvatar{ width: 22px; height: 22px; }
+}
+
+
+
+
+
+
